@@ -3,7 +3,6 @@ import { View, StyleSheet, Text } from 'react-native';
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
-  withTiming 
 } from 'react-native-reanimated';
 
 interface TrafficSign {
@@ -20,11 +19,11 @@ interface TrafficSignsProps {
 
 const TrafficSigns: React.FC<TrafficSignsProps> = ({ distance, onTrafficLightChange }) => {
   const [signs, setSigns] = useState<TrafficSign[]>([]);
-  const [trafficLightText, setTrafficLightText] = useState('CONTINUAR'); // ✅ Texto sincronizado
+  const [trafficLightText, setTrafficLightText] = useState('CONTINUAR');
   const currentTrafficLightColor = useSharedValue<'red' | 'yellow' | 'green'>('green');
   const trafficLightTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Generar solo semáforos cada 150 metros
+  // Generar semáforos cada 150 metros
   useEffect(() => {
     const newSigns: TrafficSign[] = [];
     const signalInterval = 150;
@@ -63,22 +62,22 @@ const TrafficSigns: React.FC<TrafficSignsProps> = ({ distance, onTrafficLightCha
 
         switch (currentTrafficLightColor.value) {
           case 'red':
-            next = 'yellow';
-            duration = 1000;
+            next = 'green';
+            duration = 15000; // 
             break;
           case 'yellow':
-            next = 'green';
-            duration = 3000;
+            next = 'red';
+            duration = 15000;  // 
             break;
           case 'green':
-            next = 'red';
-            duration = 2000;
+            next = 'yellow';
+            duration = 3000; // 
             break;
         }
 
         currentTrafficLightColor.value = next;
 
-        // ✅ Actualizamos texto legible en React
+        // Texto en React
         setTrafficLightText(
           next === 'red'
             ? 'FRENAR'
@@ -103,7 +102,7 @@ const TrafficSigns: React.FC<TrafficSignsProps> = ({ distance, onTrafficLightCha
     };
   }, [signs.length]);
 
-  // Estilos animados para las luces
+  // Estilos animados
   const redStyle = useAnimatedStyle(() => ({
     opacity: currentTrafficLightColor.value === 'red' ? 1 : 0.3,
   }));
@@ -131,13 +130,11 @@ const TrafficSigns: React.FC<TrafficSignsProps> = ({ distance, onTrafficLightCha
           <Animated.View style={[styles.light, styles.greenLight, greenStyle]} />
         </View>
         <View style={styles.statusIndicator}>
-          {/* ✅ Texto normal de React */}
           <Text style={styles.statusText}>{trafficLightText}</Text>
         </View>
       </View>
     );
   };
-
 
   return (
     <View style={styles.container}>

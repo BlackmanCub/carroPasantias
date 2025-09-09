@@ -3,3 +3,4 @@
 export default function ColoringGame() {
   return null;
 }
+

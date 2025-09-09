@@ -29,21 +29,27 @@ const TrafficLight: React.FC<TrafficLightProps> = ({ onColorChange, isActive, di
 
         switch (color) {
           case 'red':
+            nextColor = 'green';
+            duration = 15000; // Rojo dura 15 segundos
+            break;
+          case 'green':
             nextColor = 'yellow';
-            duration = 1000; // Amarillo 1 segundo
+            duration = 15000; // Verde dura 15 segundos
             break;
           case 'yellow':
-            nextColor = 'green';
-            duration = 3000; // Verde 3 segundos
+            nextColor = 'red';
+            duration = 3000; // Amarillo dura 3 segundos
             break;
           default:
             nextColor = 'red';
-            duration = 2000; // Rojo 2 segundos
+            duration = 15000; // Rojo dura 15 segundos
             break;
         }
 
-        setCurrentColor(nextColor);
-        timeoutRef.current = setTimeout(() => cycleTrafficLight(nextColor), duration);
+        timeoutRef.current = setTimeout(() => {
+          setCurrentColor(nextColor);
+          cycleTrafficLight(nextColor);
+        }, duration);
       };
 
       // Arrancar ciclo
